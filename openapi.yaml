@@ -1,0 +1,426 @@
+openapi: 3.0.1
+info:
+  title: Command Line Interface Plugin
+  description: A plugin that allows the user to run commands in the command line through ChatGPT. Ask before running any dangerous commands, or any commands in general.
+  version: 'v1'
+servers:
+  - url: http://localhost:5003
+paths:
+
+  /command/{command}:
+    get:
+      operationId: run_command
+      summary: run input command, and return the output
+      parameters:
+
+      - in: path
+        name: command
+        schema:
+            type: string
+        required: true
+        description: command to run, outputs are returned
+
+      responses:
+
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/command/run_command'
+
+        "500":
+          description: Command Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/command/run_command"
+
+  /listdir/{directory}:
+    get:
+      operationId: get_files
+      summary: get all files and folders in specified directory
+      parameters:
+
+      - in: path
+        name: directory
+        schema:
+            type: string
+        required: true
+        description: directory to get files and folders from
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/directory/get_files'
+
+        "404":
+          description: Directory not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/directory/get_files'
+
+  /fileread/{filepath}:
+    get:
+      operationId: read_file
+      summary: read a file in specified directory, needs full directory, example, C:/demo.txt
+      parameters:
+      - in: path
+        name: filepath
+        schema:
+            type: string
+        required: true
+        description: directory to read file from
+      responses:
+
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/fileread/read_file'
+
+        "400":
+          description: File is empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/fileread/read_file'
+
+        "404":
+          description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/fileread/read_file'
+  
+  /calculate_equation/{input}:
+    get:
+      operationId: calculate
+      summary: calculate an inputted equation, should be in sympy format.
+      parameters:
+
+      - in: path
+        name: input
+        schema:
+            type: string
+        required: true
+        description: the equation to be calculated, in sympy format.
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/calculate_equation/calculate'
+
+        "500":
+          description: Invalid or unsolvable equation
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/calculate_equation/calculate'
+    
+  /plot/{equation}:
+    get:
+      operationId: plot_equation
+      summary: plot an equation and output the URL of the image that contains the plot. makes it easier to get an idea across to the user. Uses numpy, so make sure to include np, here is an example np.sin(x). only works on 2D plotting problems. display the output in the window.
+      parameters:
+
+      - in: path
+        name: equation
+        schema:
+            type: string
+        required: true
+        description: the equation to be plotted, in numpy format.
+
+      responses:
+        "200":
+          description: OK
+          content:`
+            application/json:
+              schema:
+                $ref: '#/schemas/calculate_equation/calculate'
+        "500":
+          description: Invalid or unsolvable equation
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/calculate_equation/calculate'
+
+  /3dplot/{num_points}/{equation}/{x_range}/{y_range}:
+    get:
+      operationId: create_plot
+      summary: plot a 3D equation and output the URL of the image that contains the plot. display the output in the window.
+      parameters:
+
+      - in: path
+        name: num_points
+        schema:
+            type: integer
+        required: true
+        description: the number of points for which the equation will be evaluated.
+
+      - in: path
+        name: equation
+        schema:
+            type: string
+        required: true
+        description: the equation to be plotted in 3D, in numpy eval format, where X, Y represent the x and y coordinates respectively. you do not need to use np. for example, X**2 + Y**2.
+
+      - in: path
+        name: x_range
+        schema:
+            type: array
+            items:
+              type: number
+        required: true
+        description: the range for x values, provided as a list of two numbers [x_start, x_end].
+
+      - in: path
+        name: y_range
+        schema:
+            type: array
+            items:
+              type: number
+        required: true
+        description: the range for y values, provided as a list of two numbers [y_start, y_end].
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file:
+                    type: string
+                    description: URL of the generated plot image.
+        "500":
+          description: Invalid or unsolvable equation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message.
+
+
+  /download_youtube/{name_or_list}:
+    get:
+      operationId: download_youtube
+      summary: download a single youtube video by the name of the video, or specify multiple via the "," seperator, for example "video1, video2, video3".
+      parameters:
+
+      - in: path
+        name: name_or_list
+        schema:
+            type: string
+        required: true
+        description: video's to be downloaded, seperated by ",". If you want to download a single video, just put the name of the video.
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/download_youtube/youtubedownload'
+
+  /openwebpage/{webpage}:
+    get:
+      operationId: open_webpage
+      summary: open a webpage in the default browser.
+      parameters:
+
+      - in: path
+        name: webpage
+        schema:
+            type: string
+        required: true
+        description: webpage to be opened.
+      
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/openwebpage/open_webpage'
+        
+        "500":
+          description: Invalid URL or webpage error
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/openwebpage/open_webpage'
+
+  /getwebpage/{webpage}:
+    get:
+      operationId: get_website
+      summary: get the HTML of a webpage.
+      parameters:
+      
+      - in: path
+        name: webpage
+        schema:
+            type: string
+        required: true
+        description: webpage to be sent.
+      
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/getwebpage/get_webpage'
+        
+        "500":
+          description: Invalid URL or webpage error
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/getwebpage/get_webpage'
+
+  /clearplaylist/{amount}:
+    get:
+      operationId: clear_playlist
+      summary: clear the playlist folder, you can specify the amount of files to delete, or delete everything by specifiying 'all'. Call this before creating a new playlist.
+      parameters:
+
+      - in: path
+        name: amount
+        schema:
+            type: string
+        required: true
+        description: amount of video's to be deleted, or 'all' to delete everything.
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/clearplaylist/clear_playlist'
+
+  /playvideos/{termspec}:
+    get:
+      operationId: playvideo
+      summary: play all videos inside of the playlist folder, currently only supports playing all the files in the playlist folder using 'all'.
+      parameters:
+
+      - in: path
+        name: termspec
+        schema:
+            type: string
+        required: true
+        description: specify 'all' to play all the videos in the playlist folder. currently dosnt support playing specific videos.
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/playvideos/play_videos'
+
+components:
+  schemas:
+    run_command:
+      type: object
+      required:
+      - command
+      properties:
+        output:
+          type: string
+          description: The output of the command.
+
+    get_files:
+      type: object
+      required:
+      - directory
+      properties:
+        output:
+          type: string
+          description: All files in the specified directory.
+
+    read_file:
+      type: object
+      required:
+      - filepath
+      properties:
+        output:
+          type: string
+          description: Whats inside of the specified file, returned as text.
+    
+    calculate_equation:
+      type: object
+      required:
+      - input
+      properties:
+        output:
+          type: string
+          description: The answer to the math problem.
+    
+    plot_equation:
+      type: object
+      required:
+      - equation
+      properties:
+        output:
+          type: string
+          description: The URL of the image that contains the plot of the equation.
+    
+    youtubedownload:
+      type: object
+      required:
+      - name_or_list
+      properties:
+        output:
+          type: string
+          description: if the download was successful or not. Along with the output directory.
+    
+    playvideo:
+      type: object
+      required:
+      - termspec
+      properties:
+        output:
+          type: string
+          description: if the video was played successfully or not.
+    
+    clear_playlist:
+      type: object
+      required:
+      - amount
+      properties:
+        output:
+          type: string
+          description: if the playlist was cleared successfully or not.
+    
+    open_webpage:
+      type: object
+      required:
+      - webpage
+      properties:
+        output:
+          type: string
+          description: if the webpage was opened successfully or not.
+    
+    get_webpage:
+      type: object
+      required:
+      - webpage
+      properties:
+        output:
+          type: string
+          description: the HTML of the webpage.

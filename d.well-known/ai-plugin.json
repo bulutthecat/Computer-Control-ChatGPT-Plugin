@@ -1,0 +1,17 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "Command_line_acess_plugin",
+    "name_for_model": "Command_Line_Acess_Plugin",
+    "description_for_human": "Fixing technical problems using ChatGPT for the Command line.",
+    "description_for_model": "Simple plugin that allows you acess to the system command line, you can query it and it will give the output of the command you ran. Can be used for launching applications and acessing the users system directly. Assume that the user is running windows 11 on Powershell. If the user dosent give you all the details you need to be able to execute the command you want to, run some debug commands to get the information yourself, this information usually includes operating directory, username, system details and other important information. Some recommended commands are systeminfo and whoami. DO NOT ASSUME VARIABLES LIKE logged in username or anything that can be changed. The command line is Powershell, so follow Powershell syntax, you are going to run powershell commands for everything through CMD, so add powershell to the beginning. Make sure to breifly explain what you are going to do before using this plugin. before running any other command, make sure to clear the playlist, as it also contains images that are used as well.",
+    "auth": {
+      "type": "none"
+    },
+    "api": {
+      "type": "openapi",
+      "url": "http://localhost:5003/openapi.yaml"
+    },
+    "logo_url": "http://localhost:5003/logo.png",
+    "contact_email": "egekevindalli@gmail.com",
+    "legal_info_url": "http://noclue.com/nocluewhattoputhere"
+  }

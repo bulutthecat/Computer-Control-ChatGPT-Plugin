@@ -142,7 +142,7 @@ paths:
       responses:
         "200":
           description: OK
-          content:`
+          content:
             application/json:
               schema:
                 $ref: '#/schemas/calculate_equation/calculate'
@@ -255,41 +255,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/schemas/openwebpage/open_webpage'
-        
-        "500":
-          description: Invalid URL or webpage error
-          content:
-            application/json:
-              schema:
-                $ref: '#/schemas/openwebpage/open_webpage'
-
-  /getwebpage/{webpage}:
-    get:
-      operationId: get_website
-      summary: get the HTML of a webpage.
-      parameters:
-      
-      - in: path
-        name: webpage
-        schema:
-            type: string
-        required: true
-        description: webpage to be sent.
-      
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/schemas/getwebpage/get_webpage'
-        
-        "500":
-          description: Invalid URL or webpage error
-          content:
-            application/json:
-              schema:
-                $ref: '#/schemas/getwebpage/get_webpage'
 
   /clearplaylist/{amount}:
     get:
@@ -324,14 +289,6 @@ paths:
             type: string
         required: true
         description: specify 'all' to play all the videos in the playlist folder. currently dosnt support playing specific videos.
-
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/schemas/playvideos/play_videos'
 
 components:
   schemas:
@@ -406,21 +363,3 @@ components:
         output:
           type: string
           description: if the playlist was cleared successfully or not.
-    
-    open_webpage:
-      type: object
-      required:
-      - webpage
-      properties:
-        output:
-          type: string
-          description: if the webpage was opened successfully or not.
-    
-    get_webpage:
-      type: object
-      required:
-      - webpage
-      properties:
-        output:
-          type: string
-          description: the HTML of the webpage.

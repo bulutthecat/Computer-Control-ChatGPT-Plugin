@@ -8,12 +8,16 @@ from youtube_search import YoutubeSearch
 from pytube import YouTube
 import subprocess
 from sympy import sympify
+import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 import pathlib
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import random
-import webbrowser
-import requests
 
 app = Quart(__name__, static_folder='assets')
 app = cors(app, allow_origin="https://chat.openai.com")
@@ -78,9 +82,7 @@ async def calculate(input):
 @app.get("/plot/<string:equation>")
 async def plot_equation(equation: str):
     try:
-        # Create a new figure
         plt.figure()
-
         # create the range of x values
         x = np.linspace(-10, 10, 400)
 
@@ -133,7 +135,6 @@ async def create_plot(num_points, equation, x_range, y_range):
         random_value = random.randint(0, 1000)
         save_path = os.path.join(save_dir, f"plot-{random_value}.png")
         plt.savefig(save_path)
-        plt.close()
         return quart.Response(response=json.dumps({"file": f"http://localhost:5003/assets/3Dplots/plot-{random_value}.png"}), status=200)
     except Exception as e:
         return quart.Response(response=str(e), status=500)
@@ -182,24 +183,6 @@ async def clear_playlist(amount):
             os.remove(os.path.join("./assets", files_to_remove[i]))
     return quart.Response(response="done", status=200)
 
-@app.get("/openwebpage/<path:webpage>")
-async def open_website(webpage):
-    try:
-        print(r"openwebpage was called")
-        webbrowser.open(webpage)
-        return quart.Response(response="done", status=200)
-    except Exception as e:
-        return quart.Response(response=str(e), status=500)
-
-@app.get("/getwebpage/<path:webpage>")
-async def get_website(webpage):
-    try:
-        print(r"getwebpage was called")
-        response = requests.get(webpage)
-        return quart.Response(response=response.text, status=200)
-    except Exception as e:
-        return quart.Response(response=str(e), status=500)
-
 @app.get("/logo.png")
 async def plugin_logo():
     filename = 'logo.png'
@@ -227,4 +210,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
